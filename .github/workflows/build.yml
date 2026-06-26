@@ -19,6 +19,17 @@ jobs:
           channel: stable
           flutter-version: 3.27.4
 
+      - name: Generate platform projects
+        run: |
+          cd /tmp
+          flutter create --project-name nodespen --org com.nodespen nodespen_platform
+          cp -r /tmp/nodespen_platform/android $GITHUB_WORKSPACE/
+          cp -r /tmp/nodespen_platform/ios $GITHUB_WORKSPACE/ 2>/dev/null || true
+          cp -r /tmp/nodespen_platform/web $GITHUB_WORKSPACE/ 2>/dev/null || true
+          cp -r /tmp/nodespen_platform/linux $GITHUB_WORKSPACE/ 2>/dev/null || true
+          cp -r /tmp/nodespen_platform/test $GITHUB_WORKSPACE/test_generated 2>/dev/null || true
+          cp /tmp/nodespen_platform/analysis_options.yaml $GITHUB_WORKSPACE/ 2>/dev/null || true
+
       - name: Install dependencies
         run: flutter pub get
 
