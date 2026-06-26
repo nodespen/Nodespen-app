@@ -1,4 +1,5 @@
-import 'dart:ui' as ui;
+import 'dart:math' show cos, sin;
+import 'dart:ui' show Color;
 import 'package:uuid/uuid.dart';
 import 'nodo.dart';
 import 'segmento.dart';
@@ -85,8 +86,8 @@ class Marioneta {
     if (nodo.id != nodoRaizId) {
       final anguloFinal = padreAng + nodo.anguloLocal;
       nodo.posicion = Vector2(
-        padrePos.x + (nodo.longitud * anguloFinal.cos()),
-        padrePos.y + (nodo.longitud * anguloFinal.sin()),
+        padrePos.x + (nodo.longitud * cos(anguloFinal)),
+        padrePos.y + (nodo.longitud * sin(anguloFinal)),
       );
     }
 

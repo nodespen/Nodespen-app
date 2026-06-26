@@ -133,9 +133,9 @@ class Nodo {
     esEstirable: json['esEstirable'],
     smartStretch: json['smartStretch'],
     usarColorSegmento: json['usarColorSegmento'],
-    color: Color.fromHex(json['color']),
-    colorGradiente: Color.fromHex(json['colorGradiente']),
-    colorContorno: Color.fromHex(json['colorContorno']),
+    color: colorFromHex(json['color']),
+    colorGradiente: colorFromHex(json['colorGradiente']),
+    colorContorno: colorFromHex(json['colorContorno']),
     segmentoTipo: SegmentoTipo.values.byName(json['segmentoTipo']),
     rellenoTipo: RellenoTipo.values.byName(json['rellenoTipo']),
     rellenoVisible: json['rellenoVisible'],
@@ -153,8 +153,9 @@ class Nodo {
 
 extension ColorExtension on Color {
   String toHex() => '#${value.toRadixString(16).padLeft(8, '0').substring(2)}';
-  static Color fromHex(String hex) {
-    final h = hex.replaceFirst('#', '');
-    return Color(int.parse('FF$h', radix: 16));
-  }
+}
+
+Color colorFromHex(String hex) {
+  final h = hex.replaceFirst('#', '');
+  return Color(int.parse('FF$h', radix: 16));
 }

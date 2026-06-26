@@ -1,4 +1,4 @@
-import 'dart:ui' as ui;
+import 'dart:ui' show Color;
 import 'package:flutter/material.dart' show Colors;
 import 'nodo.dart';
 import 'segmento.dart';

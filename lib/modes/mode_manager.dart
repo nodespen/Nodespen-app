@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../core/document/document.dart';
+import '../core/math/vector2.dart';
 import 'mode.dart';
 
 class ModeManager extends ChangeNotifier {

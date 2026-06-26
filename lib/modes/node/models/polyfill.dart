@@ -37,8 +37,8 @@ class Polyfill {
     nodosIds: List<String>.from(json['nodosIds']),
     nombre: json['nombre'],
     cerrado: json['cerrado'],
-    color: Color.fromHex(json['color']),
-    colorContorno: Color.fromHex(json['colorContorno']),
+    color: colorFromHex(json['color']),
+    colorContorno: colorFromHex(json['colorContorno']),
     grosorContorno: (json['grosorContorno'] as num).toDouble(),
   );
 }
