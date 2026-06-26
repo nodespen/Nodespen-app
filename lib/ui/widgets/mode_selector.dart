@@ -63,7 +63,7 @@ class _ModeButton extends StatelessWidget {
         margin: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
         decoration: BoxDecoration(
-          color: isActive ? modeColor.withOpacity(0.2) : Colors.transparent,
+          color: isActive ? modeColor.withValues(alpha: 0.2) : Colors.transparent,
           borderRadius: BorderRadius.circular(8),
           border: isActive
             ? Border.all(color: modeColor, width: 1.5)

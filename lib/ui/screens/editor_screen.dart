@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../modes/mode_manager.dart';
-import '../../modes/mode.dart';
 import '../../modes/node/node_mode.dart';
-import '../../modes/node/models/marioneta.dart';
-import '../../modes/node/models/nodo.dart';
-import '../../modes/node/models/default_pencil.dart';
 import '../../core/document/document.dart';
 import '../theme/app_theme.dart';
 import '../widgets/mode_selector.dart';
@@ -150,7 +146,7 @@ class _EditorScreenState extends State<EditorScreen> {
         avatar: Text(icon, style: const TextStyle(fontSize: 14)),
         label: Text(label, style: const TextStyle(fontSize: 11, color: NodespenColors.textSecondary)),
         backgroundColor: NodespenColors.background,
-        side: BorderSide(color: NodespenColors.border.withOpacity(0.5)),
+        side: BorderSide(color: NodespenColors.border.withValues(alpha: 0.5)),
         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
         visualDensity: VisualDensity.compact,
       ),
@@ -279,7 +275,7 @@ class _EditorScreenState extends State<EditorScreen> {
     return Center(
       child: Text(
         'Selecciona un elemento',
-        style: TextStyle(color: NodespenColors.textSecondary.withOpacity(0.5)),
+        style: TextStyle(color: NodespenColors.textSecondary.withValues(alpha: 0.5)),
       ),
     );
   }
@@ -367,17 +363,17 @@ class _EditorScreenState extends State<EditorScreen> {
                   width: 40,
                   decoration: BoxDecoration(
                     border: Border(
-                      right: BorderSide(color: NodespenColors.border.withOpacity(0.3)),
+                      right: BorderSide(color: NodespenColors.border.withValues(alpha: 0.3)),
                     ),
                     color: i == _document.timeline.currentFrame
-                      ? NodespenColors.accent.withOpacity(0.2)
+                      ? NodespenColors.accent.withValues(alpha: 0.2)
                       : null,
                   ),
                   child: Center(
                     child: Text(
                       '${i + 1}',
                       style: TextStyle(
-                        color: NodespenColors.textSecondary.withOpacity(0.5),
+                        color: NodespenColors.textSecondary.withValues(alpha: 0.5),
                         fontSize: 9,
                       ),
                     ),

@@ -1,4 +1,4 @@
-import 'dart:ui' as ui;
+import 'dart:ui' show Color;
 import 'package:uuid/uuid.dart';
 import '../../../core/math/vector2.dart';
 import 'nodo.dart';

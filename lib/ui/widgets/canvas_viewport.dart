@@ -119,7 +119,7 @@ class _CanvasPainter extends CustomPainter {
     );
 
     final gridPaint = Paint()
-      ..color = NodespenColors.border.withOpacity(0.3)
+      ..color = NodespenColors.border.withValues(alpha: 0.3)
       ..strokeWidth = 0.5;
     for (var x = 0.0; x < size.width; x += 50) {
       canvas.drawLine(Offset(x, 0), Offset(x, size.height), gridPaint);

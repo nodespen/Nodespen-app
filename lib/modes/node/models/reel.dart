@@ -1,4 +1,3 @@
-import 'dart:ui' as ui;
 import 'package:uuid/uuid.dart';
 import '../../../core/document/frame.dart';
 import '../../../core/document/camera.dart';

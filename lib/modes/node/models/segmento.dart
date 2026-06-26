@@ -1,5 +1,4 @@
 import 'package:uuid/uuid.dart';
-import 'nodo.dart';
 
 class Segmento {
   final String id;

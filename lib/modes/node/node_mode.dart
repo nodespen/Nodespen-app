@@ -7,6 +7,7 @@ import '../../core/math/vector2.dart';
 import '../node/models/marioneta.dart';
 import '../node/models/nodo.dart';
 import '../node/models/segmento.dart';
+import '../node/models/polyfill.dart';
 import '../node/models/default_pencil.dart';
 
 class NodeMode extends Mode {
