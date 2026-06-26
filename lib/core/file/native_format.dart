@@ -25,7 +25,6 @@ class NativeFormat {
     final magic = utf8.decode(bytes.sublist(0, 4));
     if (magic != magicBytes) throw FormatException('Formato .nspn inválido');
 
-    final version = bytes[4];
     final dataLength = _bytesToInt32(bytes.sublist(5, 9));
     final compressed = bytes.sublist(9, 9 + dataLength);
 

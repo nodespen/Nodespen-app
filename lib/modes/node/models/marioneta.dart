@@ -1,5 +1,4 @@
 import 'dart:math' show cos, sin;
-import 'dart:ui' show Color;
 import 'package:uuid/uuid.dart';
 import 'nodo.dart';
 import 'segmento.dart';

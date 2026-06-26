@@ -1,9 +1,7 @@
-import 'dart:typed_data';
 import 'package:uuid/uuid.dart';
 import 'camera.dart';
 import 'scene.dart';
 import 'timeline.dart';
-import '../math/vector2.dart';
 
 enum ProjectMode { draw, node, gacha }
 

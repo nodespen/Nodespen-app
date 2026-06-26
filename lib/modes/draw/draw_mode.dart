@@ -1,9 +1,7 @@
-import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import '../mode.dart';
 import '../../core/document/document.dart';
 import '../../core/canvas/renderer.dart';
-import '../../core/math/vector2.dart';
 
 class DrawMode extends Mode {
   @override String get name => 'Dibujo';

@@ -1,8 +1,6 @@
 import '../../core/document/document.dart';
 import '../../core/document/layer.dart' show ContentType;
 import '../../modes/node/models/marioneta.dart';
-import '../../modes/node/models/nodo.dart' show Nodo, NodoTipo, SegmentoTipo;
-import '../../modes/node/models/default_pencil.dart';
 
 class ConversionEngine {
   final NodespenDocument document;

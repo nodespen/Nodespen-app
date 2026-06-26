@@ -1,12 +1,9 @@
-import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import '../mode.dart';
 import '../../core/document/document.dart';
 import '../../core/canvas/renderer.dart';
-import '../../core/math/vector2.dart';
 import '../node/models/marioneta.dart';
 import '../node/models/nodo.dart';
-import '../node/models/segmento.dart';
 import '../node/models/polyfill.dart';
 import '../node/models/default_pencil.dart';
 
