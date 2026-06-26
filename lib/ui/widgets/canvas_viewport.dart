@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../modes/mode_manager.dart';
 import '../../modes/mode.dart';
+import '../../modes/draw/draw_mode.dart';
 import '../../core/canvas/renderer.dart';
 import '../../core/document/document.dart';
 import '../../core/math/vector2.dart' show Vector2;
@@ -22,7 +23,8 @@ class CanvasViewport extends StatefulWidget {
 
 class _CanvasViewportState extends State<CanvasViewport> {
   late NodespenRenderer _renderer;
-  Offset _lastPanPosition = Offset.zero;
+  Offset _lastFocalPoint = Offset.zero;
+  int _pointerCount = 0;
 
   @override
   void initState() {
@@ -38,29 +40,42 @@ class _CanvasViewportState extends State<CanvasViewport> {
     }
   }
 
+  bool get _isDrawMode => widget.modeManager.activeMode?.modeType == ProjectMode.draw;
+
   void _onScaleStart(ScaleStartDetails details) {
-    _lastPanPosition = details.focalPoint;
-    final canvasPos = _screenToCanvas(details.focalPoint);
-    widget.modeManager.dragStart(canvasPos);
+    _lastFocalPoint = details.focalPoint;
+    _pointerCount = details.pointerCount;
+    if (_isDrawMode && _pointerCount == 1) {
+      final canvasPos = _screenToCanvas(details.focalPoint);
+      widget.modeManager.dragStart(canvasPos);
+    }
   }
 
   void _onScaleUpdate(ScaleUpdateDetails details) {
-    if (details.pointerCount == 1) {
-      final delta = details.focalPoint - _lastPanPosition;
-      widget.document.camera.pan(Vector2(delta.dx, delta.dy));
-      _lastPanPosition = details.focalPoint;
-    } else if (details.pointerCount >= 2) {
-      widget.document.camera.zoomTo(
-        details.scale,
-        _screenToCanvas(details.focalPoint),
-      );
+    _pointerCount = details.pointerCount;
+    if (_isDrawMode && _pointerCount == 1) {
+      final canvasPos = _screenToCanvas(details.focalPoint);
+      widget.modeManager.dragUpdate(canvasPos);
+    } else {
+      if (details.pointerCount == 1) {
+        final delta = details.focalPoint - _lastFocalPoint;
+        widget.document.camera.pan(Vector2(delta.dx, delta.dy));
+      } else if (details.pointerCount >= 2) {
+        widget.document.camera.zoomTo(
+          details.scale,
+          _screenToCanvas(details.focalPoint),
+        );
+      }
     }
+    _lastFocalPoint = details.focalPoint;
     setState(() {});
   }
 
   void _onScaleEnd(ScaleEndDetails details) {
-    final canvasPos = _screenToCanvas(_lastPanPosition);
-    widget.modeManager.dragEnd(canvasPos);
+    if (_isDrawMode) {
+      final canvasPos = _screenToCanvas(_lastFocalPoint);
+      widget.modeManager.dragEnd(canvasPos);
+    }
   }
 
   void _onTapUp(TapUpDetails details) {
@@ -96,6 +111,7 @@ class _CanvasViewportState extends State<CanvasViewport> {
             painter: _CanvasPainter(
               mode: widget.modeManager.activeMode,
               renderer: _renderer,
+              drawMode: _isDrawMode ? (widget.modeManager.activeMode as DrawMode?) : null,
             ),
             size: Size.infinite,
           ),
@@ -108,8 +124,9 @@ class _CanvasViewportState extends State<CanvasViewport> {
 class _CanvasPainter extends CustomPainter {
   final Mode? mode;
   final NodespenRenderer renderer;
+  final DrawMode? drawMode;
 
-  _CanvasPainter({required this.mode, required this.renderer});
+  _CanvasPainter({required this.mode, required this.renderer, this.drawMode});
 
   @override
   void paint(Canvas canvas, Size size) {

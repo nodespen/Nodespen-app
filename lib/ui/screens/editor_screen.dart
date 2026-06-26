@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import '../../modes/mode_manager.dart';
 import '../../modes/node/node_mode.dart';
+import '../../modes/draw/draw_mode.dart';
+import '../../modes/draw/tools/draw_tool.dart';
+import '../../modes/draw/tools/pen_tool.dart';
+import '../../modes/gacha/gacha_mode.dart';
 import '../../core/document/document.dart';
 import '../theme/app_theme.dart';
 import '../widgets/mode_selector.dart';
@@ -22,12 +26,16 @@ class _EditorScreenState extends State<EditorScreen> {
     super.initState();
     _document = NodespenDocument(name: 'Mi proyecto');
     _modeManager = ModeManager(_document);
-    _modeManager.switchTo(ProjectMode.node);
+    _modeManager.registerMode(DrawMode());
+    _modeManager.registerMode(NodeMode());
+    _modeManager.registerMode(GachaMode());
+    _modeManager.switchTo(ProjectMode.draw);
     _modeManager.addListener(_onModeChanged);
   }
 
   void _onModeChanged() => setState(() {});
   bool get _isNodeMode => _modeManager.activeMode?.modeType == ProjectMode.node;
+  bool get _isDrawMode => _modeManager.activeMode?.modeType == ProjectMode.draw;
 
   @override
   void dispose() {
@@ -113,6 +121,7 @@ class _EditorScreenState extends State<EditorScreen> {
   }
 
   Widget _buildToolBar() {
+    final mode = _modeManager.activeMode;
     return Container(
       height: 48,
       padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -125,16 +134,37 @@ class _EditorScreenState extends State<EditorScreen> {
       child: Row(
         children: [
           ModeSelector(modeManager: _modeManager),
+          const SizedBox(width: 12),
+          Container(height: 24, width: 1, color: NodespenColors.border),
+          const SizedBox(width: 12),
+          if (_isDrawMode && mode is DrawMode) ...[
+            for (final tool in mode.tools)
+              _toolChip(tool.icon, tool.name, active: mode.currentTool.toolType == tool.toolType, onTap: () => mode.setTool(tool.toolType)),
+          ],
           if (_isNodeMode) ...[
-            const SizedBox(width: 12),
-            Container(height: 24, width: 1, color: NodespenColors.border),
-            const SizedBox(width: 12),
             _toolChip('🖊️', 'Seleccionar'),
             _toolChip('➕', 'Nodo'),
             _toolChip('🔗', 'Segmento'),
             _toolChip('🎬', 'Reel'),
           ],
         ],
+      ),
+    );
+  }
+
+  Widget _toolChip(String icon, String label, {bool active = false, VoidCallback? onTap}) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 4),
+      child: GestureDetector(
+        onTap: onTap,
+        child: Chip(
+          avatar: Text(icon, style: const TextStyle(fontSize: 14)),
+          label: Text(label, style: const TextStyle(fontSize: 11, color: NodespenColors.textSecondary)),
+          backgroundColor: active ? NodespenColors.primary : NodespenColors.background,
+          side: BorderSide(color: active ? NodespenColors.accent : NodespenColors.border.withValues(alpha: 0.5)),
+          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          visualDensity: VisualDensity.compact,
+        ),
       ),
     );
   }
@@ -154,7 +184,7 @@ class _EditorScreenState extends State<EditorScreen> {
   }
 
   Widget _buildLeftToolbar() {
-    final isNode = _isNodeMode;
+    final mode = _modeManager.activeMode;
     return Container(
       width: 48,
       decoration: BoxDecoration(
@@ -164,7 +194,7 @@ class _EditorScreenState extends State<EditorScreen> {
         ),
       ),
       child: Column(
-        children: isNode
+        children: _isNodeMode
           ? [
               _toolButton(Icons.touch_app, 'Arrastrar (Mango A)'),
               _toolButton(Icons.rotate_right, 'Rotar (Mango B)'),
@@ -175,27 +205,34 @@ class _EditorScreenState extends State<EditorScreen> {
               const Spacer(),
               _toolButton(Icons.settings, 'Ajustes'),
             ]
-          : [
-              _toolButton(Icons.pan_tool, 'Seleccionar'),
-              _toolButton(Icons.edit, 'Dibujar'),
-              _toolButton(Icons.brush, 'Pincel'),
-              _toolButton(Icons.format_shapes, 'Formas'),
-              _toolButton(Icons.colorize, 'Relleno'),
-              const Spacer(),
-              _toolButton(Icons.settings, 'Ajustes'),
-            ],
+          : (_isDrawMode && mode is DrawMode
+            ? [
+                _toolButton(Icons.edit, 'Lápiz', active: mode.currentTool.toolType == ToolType.pen, onPressed: () => mode.setTool(ToolType.pen)),
+                _toolButton(Icons.brush, 'Borrador', active: mode.currentTool.toolType == ToolType.eraser, onPressed: () => mode.setTool(ToolType.eraser)),
+                _toolButton(Icons.crop_square, 'Rectángulo', active: mode.currentTool.toolType == ToolType.rect, onPressed: () => mode.setTool(ToolType.rect)),
+                _toolButton(Icons.circle_outlined, 'Círculo', active: mode.currentTool.toolType == ToolType.circle, onPressed: () => mode.setTool(ToolType.circle)),
+                _toolButton(Icons.show_chart, 'Línea', active: mode.currentTool.toolType == ToolType.line, onPressed: () => mode.setTool(ToolType.line)),
+                _toolButton(Icons.delete_sweep, 'Limpiar', onPressed: () => mode.clearCanvas()),
+                const Spacer(),
+                _toolButton(Icons.settings, 'Ajustes'),
+              ]
+            : [
+                _toolButton(Icons.pan_tool, 'Seleccionar'),
+                const Spacer(),
+                _toolButton(Icons.settings, 'Ajustes'),
+              ]),
       ),
     );
   }
 
-  Widget _toolButton(IconData icon, String tooltip) {
+  Widget _toolButton(IconData icon, String tooltip, {bool active = false, VoidCallback? onPressed}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2),
       child: Tooltip(
         message: tooltip,
         child: IconButton(
-          icon: Icon(icon, size: 20, color: NodespenColors.textSecondary),
-          onPressed: () {},
+          icon: Icon(icon, size: 20, color: active ? NodespenColors.accent : NodespenColors.textSecondary),
+          onPressed: onPressed ?? () {},
         ),
       ),
     );
@@ -227,10 +264,70 @@ class _EditorScreenState extends State<EditorScreen> {
           ),
           Divider(color: NodespenColors.border, height: 1),
           Expanded(
-            child: _isNodeMode ? _buildNodeProperties() : _buildGenericProperties(),
+            child: _isNodeMode
+              ? _buildNodeProperties()
+              : (_isDrawMode && _modeManager.activeMode is DrawMode)
+                ? _buildDrawProperties(_modeManager.activeMode as DrawMode)
+                : _buildGenericProperties(),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildDrawProperties(DrawMode drawMode) {
+    return ListView(
+      padding: const EdgeInsets.all(12),
+      children: [
+        _propSection('Herramienta: ${drawMode.currentTool.name}'),
+        const SizedBox(height: 12),
+        _propSection('Color'),
+        _colorPicker(drawMode),
+        const SizedBox(height: 12),
+        _propSection('Grosor: ${drawMode.strokeWidth.toStringAsFixed(0)}px'),
+        Slider(
+          value: drawMode.strokeWidth.clamp(1, 50),
+          min: 1, max: 50,
+          activeColor: NodespenColors.accent,
+          inactiveColor: NodespenColors.border,
+          onChanged: (v) { drawMode.strokeWidth = v; setState(() {}); },
+        ),
+        const SizedBox(height: 12),
+        Divider(color: NodespenColors.border, height: 1),
+        const SizedBox(height: 8),
+        _propSection('Elementos: ${drawMode.canvas.elements.length}'),
+        const SizedBox(height: 12),
+        TextButton.icon(
+          onPressed: () { drawMode.clearCanvas(); setState(() {}); },
+          icon: const Icon(Icons.delete_sweep, size: 16, color: NodespenColors.error),
+          label: const Text('Limpiar todo', style: TextStyle(fontSize: 11, color: NodespenColors.error)),
+        ),
+      ],
+    );
+  }
+
+  Widget _colorPicker(DrawMode drawMode) {
+    final colors = [
+      Colors.white, Colors.red, Colors.orange, Colors.yellow,
+      Colors.green, Colors.cyan, Colors.blue, Colors.purple,
+      Colors.pink, Colors.brown, Colors.grey, Colors.black,
+    ];
+    return Wrap(
+      spacing: 6, runSpacing: 6,
+      children: colors.map((c) => GestureDetector(
+        onTap: () { drawMode.color = c; setState(() {}); },
+        child: Container(
+          width: 28, height: 28,
+          decoration: BoxDecoration(
+            color: c,
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: drawMode.color == c ? NodespenColors.accent : NodespenColors.border,
+              width: drawMode.color == c ? 2.5 : 1,
+            ),
+          ),
+        ),
+      )).toList(),
     );
   }
 
