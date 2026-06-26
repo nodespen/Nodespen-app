@@ -27,7 +27,7 @@ flutter:
   assets:
     - assets/icons/
     - assets/default_content/
-  fonts:
-    - family: Nodespen
-      fonts:
-        - asset: assets/fonts/Nodespen-Regular.ttf
+  # fonts:
+  #   - family: Nodespen
+  #     fonts:
+  #       - asset: assets/fonts/Nodespen-Regular.ttf
