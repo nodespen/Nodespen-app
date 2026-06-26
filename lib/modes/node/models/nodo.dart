@@ -152,7 +152,12 @@ class Nodo {
 }
 
 extension ColorExtension on Color {
-  String toHex() => '#${value.toRadixString(16).padLeft(8, '0').substring(2)}';
+  String toHex() {
+    final r = (this.r * 255).round().toRadixString(16).padLeft(2, '0');
+    final g = (this.g * 255).round().toRadixString(16).padLeft(2, '0');
+    final b = (this.b * 255).round().toRadixString(16).padLeft(2, '0');
+    return '#$r$g$b';
+  }
 }
 
 Color colorFromHex(String hex) {
