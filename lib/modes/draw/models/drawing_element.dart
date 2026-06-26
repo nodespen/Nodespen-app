@@ -1,4 +1,3 @@
-import 'dart:ui' show Color;
 import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
 import '../../../core/math/vector2.dart';
@@ -84,7 +83,7 @@ class StrokeElement extends DrawingElement {
     'id': id, 'type': type.name,
     'points': points.map((p) => [p.x, p.y]).toList(),
     'closed': closed, 'filled': filled,
-    'color': color.value, 'strokeWidth': strokeWidth,
+    'color': colorToInt(color), 'strokeWidth': strokeWidth,
     'opacity': opacity, 'visible': visible, 'order': order,
   };
 
@@ -93,7 +92,7 @@ class StrokeElement extends DrawingElement {
     points: (json['points'] as List).map((p) => Vector2(p[0], p[1])).toList(),
     closed: json['closed'] ?? false,
     filled: json['filled'] ?? false,
-    color: Color(json['color']),
+    color: intToColor(json['color']),
     strokeWidth: (json['strokeWidth'] as num).toDouble(),
   );
 
@@ -148,7 +147,7 @@ class RectElement extends DrawingElement {
     'origin': [origin.x, origin.y],
     'size': [size.x, size.y],
     'filled': filled,
-    'color': color.value, 'strokeWidth': strokeWidth,
+    'color': colorToInt(color), 'strokeWidth': strokeWidth,
     'opacity': opacity, 'visible': visible, 'order': order,
   };
 
@@ -157,7 +156,7 @@ class RectElement extends DrawingElement {
     origin: Vector2(json['origin'][0], json['origin'][1]),
     size: Vector2(json['size'][0], json['size'][1]),
     filled: json['filled'] ?? false,
-    color: Color(json['color']),
+    color: intToColor(json['color']),
     strokeWidth: (json['strokeWidth'] as num).toDouble(),
   );
 
@@ -214,7 +213,7 @@ class CircleElement extends DrawingElement {
     'center': [center.x, center.y],
     'radiusX': radiusX, 'radiusY': radiusY,
     'filled': filled,
-    'color': color.value, 'strokeWidth': strokeWidth,
+    'color': colorToInt(color), 'strokeWidth': strokeWidth,
     'opacity': opacity, 'visible': visible, 'order': order,
   };
 
@@ -224,7 +223,7 @@ class CircleElement extends DrawingElement {
     radiusX: (json['radiusX'] as num).toDouble(),
     radiusY: (json['radiusY'] as num).toDouble(),
     filled: json['filled'] ?? false,
-    color: Color(json['color']),
+    color: intToColor(json['color']),
     strokeWidth: (json['strokeWidth'] as num).toDouble(),
   );
 
@@ -274,7 +273,7 @@ class LineElement extends DrawingElement {
     'id': id, 'type': type.name,
     'start': [start.x, start.y],
     'end': [end.x, end.y],
-    'color': color.value, 'strokeWidth': strokeWidth,
+    'color': colorToInt(color), 'strokeWidth': strokeWidth,
     'opacity': opacity, 'visible': visible, 'order': order,
   };
 
@@ -282,7 +281,7 @@ class LineElement extends DrawingElement {
     id: json['id'],
     start: Vector2(json['start'][0], json['start'][1]),
     end: Vector2(json['end'][0], json['end'][1]),
-    color: Color(json['color']),
+    color: intToColor(json['color']),
     strokeWidth: (json['strokeWidth'] as num).toDouble(),
   );
 
@@ -292,3 +291,12 @@ class LineElement extends DrawingElement {
     end = matrix.transform(end);
   }
 }
+
+int colorToInt(Color c) => ((c.a * 255).round() << 24) |
+    ((c.r * 255).round() << 16) |
+    ((c.g * 255).round() << 8) |
+    (c.b * 255).round();
+
+Color intToColor(int v) => Color.fromARGB(
+    (v >> 24) & 0xFF, (v >> 16) & 0xFF,
+    (v >> 8) & 0xFF, v & 0xFF);

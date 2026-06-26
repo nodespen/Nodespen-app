@@ -5,3 +5,5 @@ linter:
     prefer_const_constructors: false
     prefer_const_declarations: false
     curly_braces_in_flow_control_structures: false
+    use_super_parameters: false
+    avoid_renaming_method_parameters: false

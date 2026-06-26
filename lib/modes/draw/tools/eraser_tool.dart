@@ -1,6 +1,4 @@
-import 'dart:ui' show Color;
 import 'package:flutter/material.dart';
-import '../models/drawing_element.dart';
 import 'draw_tool.dart';
 import '../../../core/math/vector2.dart';
 
