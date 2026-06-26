@@ -3,7 +3,6 @@ import '../mode.dart';
 import '../../core/document/document.dart';
 import '../../core/canvas/renderer.dart';
 import '../../core/math/vector2.dart';
-import 'models/drawing_element.dart';
 import 'tools/draw_tool.dart';
 import 'tools/pen_tool.dart';
 import 'tools/shape_tool.dart';

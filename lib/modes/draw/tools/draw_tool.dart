@@ -28,11 +28,11 @@ class DrawingCanvas {
   double opacity;
 
   DrawingCanvas({
-    required this.elements,
+    List<DrawingElement>? elements,
     this.currentColor = Colors.white,
     this.strokeWidth = 2.0,
     this.opacity = 1.0,
-  });
+  }) : elements = elements ?? [];
 
   void addElement(DrawingElement element) {
     element.order = elements.length;

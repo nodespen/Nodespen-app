@@ -3,7 +3,6 @@ import '../../modes/mode_manager.dart';
 import '../../modes/node/node_mode.dart';
 import '../../modes/draw/draw_mode.dart';
 import '../../modes/draw/tools/draw_tool.dart';
-import '../../modes/draw/tools/pen_tool.dart';
 import '../../modes/gacha/gacha_mode.dart';
 import '../../core/document/document.dart';
 import '../theme/app_theme.dart';
@@ -165,20 +164,6 @@ class _EditorScreenState extends State<EditorScreen> {
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           visualDensity: VisualDensity.compact,
         ),
-      ),
-    );
-  }
-
-  Widget _toolChip(String icon, String label) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 4),
-      child: Chip(
-        avatar: Text(icon, style: const TextStyle(fontSize: 14)),
-        label: Text(label, style: const TextStyle(fontSize: 11, color: NodespenColors.textSecondary)),
-        backgroundColor: NodespenColors.background,
-        side: BorderSide(color: NodespenColors.border.withValues(alpha: 0.5)),
-        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        visualDensity: VisualDensity.compact,
       ),
     );
   }
