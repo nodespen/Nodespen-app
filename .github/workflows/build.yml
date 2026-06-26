@@ -28,7 +28,6 @@ jobs:
           cp -r /tmp/nodespen_platform/web $GITHUB_WORKSPACE/ 2>/dev/null || true
           cp -r /tmp/nodespen_platform/linux $GITHUB_WORKSPACE/ 2>/dev/null || true
           rm -f /tmp/nodespen_platform/test/widget_test.dart
-          cp /tmp/nodespen_platform/analysis_options.yaml $GITHUB_WORKSPACE/ 2>/dev/null || true
           rm -rf $GITHUB_WORKSPACE/test 2>/dev/null; mkdir -p $GITHUB_WORKSPACE/test
 
       - name: Install dependencies
