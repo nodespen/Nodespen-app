@@ -39,11 +39,11 @@ jobs:
       - name: Analyze code
         shell: bash
         run: |
-          flutter analyze --verbose 2>&1 | tee analysis_log.txt
+          flutter analyze 2>&1 | tee analysis_log.txt
           exit_code=${PIPESTATUS[0]}
           if [ $exit_code -ne 0 ]; then
             echo "=== ANALYSIS ERRORS ==="
-            grep -E "^.*error|^.*warning" analysis_log.txt | head -50
+            grep "error" analysis_log.txt | head -50
             exit $exit_code
           fi
 
