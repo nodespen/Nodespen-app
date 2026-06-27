@@ -3,7 +3,7 @@ import 'package:uuid/uuid.dart';
 import 'body_part.dart';
 import 'clothing_item.dart';
 import 'color_utils.dart';
-import '../../../../core/math/vector2.dart';
+import '../../../core/math/vector2.dart';
 
 class GachaCharacter {
   final String id;

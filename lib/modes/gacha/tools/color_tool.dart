@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/gacha_character.dart';
 import '../models/body_part.dart';
 import 'gacha_tool.dart';
-import '../../../../core/math/vector2.dart';
+import '../../../core/math/vector2.dart';
 
 class ColorTool extends GachaTool {
   @override String get name => 'Color';
