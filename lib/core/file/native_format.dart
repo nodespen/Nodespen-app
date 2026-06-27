@@ -10,7 +10,7 @@ class NativeFormat {
   static Uint8List encode(NodespenDocument document) {
     final jsonStr = jsonEncode(document.toJson());
     final jsonBytes = utf8.encode(jsonStr);
-    final compressed = GZipEncoder().encode(jsonBytes);
+    final compressed = GZipEncoder().encode(jsonBytes) ?? Uint8List.fromList(jsonBytes);
 
     final header = BytesBuilder();
     header.add(utf8.encode(magicBytes));

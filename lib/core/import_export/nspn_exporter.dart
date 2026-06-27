@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:archive/archive.dart';
 import '../../core/document/document.dart';
 import 'import_engine.dart';
@@ -22,7 +23,7 @@ class NspnExporter extends FormatExporter {
   Future<List<int>> exportToBytes(NodespenDocument document) async {
     final json = jsonEncode(document.toJson());
     final jsonBytes = utf8.encode(json);
-    final compressed = GZipEncoder().encode(jsonBytes);
+    final compressed = GZipEncoder().encode(jsonBytes) ?? <int>[];
     final header = utf8.encode('NSPN0002');
     return [...header, ...compressed];
   }
