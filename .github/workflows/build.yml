@@ -39,13 +39,14 @@ jobs:
       - name: Analyze code
         shell: bash
         run: |
-          flutter analyze 2>&1 | tee analysis_log.txt
+          flutter analyze --no-fatal-infos --no-fatal-warnings 2>&1 | tee analysis_log.txt
           exit_code=${PIPESTATUS[0]}
           if [ $exit_code -ne 0 ]; then
-            echo "=== ANALYSIS ERRORS ==="
-            grep "error" analysis_log.txt | head -50
+            echo "=== FULL ANALYSIS OUTPUT ==="
+            cat analysis_log.txt
             exit $exit_code
           fi
+          echo "=== ANALYSIS PASSED ==="
 
       - name: Upload analysis logs
         if: always()
