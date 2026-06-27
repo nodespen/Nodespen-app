@@ -1,6 +1,5 @@
 import 'dart:ui' show Color;
 import 'package:uuid/uuid.dart';
-import 'package:flutter/material.dart';
 import 'body_part.dart';
 import 'clothing_item.dart';
 import 'color_utils.dart';

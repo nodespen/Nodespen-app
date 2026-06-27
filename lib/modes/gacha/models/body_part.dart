@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'dart:ui' show Color;
 import '../../../core/math/vector2.dart';
 
 enum BodyPartType {
