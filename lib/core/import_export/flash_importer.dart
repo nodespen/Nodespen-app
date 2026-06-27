@@ -83,9 +83,9 @@ class FlashImporter extends FormatImporter {
       final hex = match.group(5)!;
       final color = Color(int.parse('FF$hex', radix: 16));
       elements.add(RectElement(
-        center: Vector2(x + w / 2, y + h / 2),
-        width: w,
-        height: h,
+        origin: Vector2(x, y),
+        size: Vector2(w, h),
+        filled: true,
         color: color,
         strokeWidth: 1,
       ));
