@@ -35,7 +35,7 @@ class GachaWorkspace {
   }
 
   BodyPart? hitTest(Vector2 point, {double radius = 20}) {
-    for (final part in character.bodyParts.values.reversed) {
+    for (final part in character.bodyParts.values.toList().reversed) {
       if (!part.visible) continue;
       if (part.position.distanceTo(point) <= radius) return part;
     }

@@ -29,5 +29,14 @@ class DeleteTool extends NodeTool {
   }
 
   @override
+  void onDragStart(Vector2 position, NodeWorkspace workspace) {}
+
+  @override
+  void onDragUpdate(Vector2 position, NodeWorkspace workspace) {}
+
+  @override
+  void onDragEnd(Vector2 position, NodeWorkspace workspace) {}
+
+  @override
   void renderOverlay(Canvas canvas, NodeWorkspace workspace) {}
 }
