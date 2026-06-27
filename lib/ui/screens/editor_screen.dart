@@ -3,18 +3,11 @@ import '../../modes/mode_manager.dart';
 import '../../modes/node/node_mode.dart';
 import '../../modes/draw/draw_mode.dart';
 import '../../modes/draw/tools/draw_tool.dart';
-import '../../modes/node/tools/node_tool.dart' show NodeToolType;
 import '../../modes/gacha/gacha_mode.dart';
-import '../../modes/gacha/models/clothing_item.dart' show ClothingCategory;
-import '../../modes/gacha/tools/gacha_tool.dart' show GachaToolType;
-import '../../core/animation/playback_controller.dart';
 import '../../core/document/document.dart';
 import '../theme/app_theme.dart';
 import '../widgets/mode_selector.dart';
 import '../widgets/canvas_viewport.dart';
-import '../widgets/timeline_editor.dart';
-import 'import_export_screen.dart';
-import 'settings_screen.dart';
 
 class EditorScreen extends StatefulWidget {
   const EditorScreen({super.key});
@@ -26,14 +19,12 @@ class EditorScreen extends StatefulWidget {
 class _EditorScreenState extends State<EditorScreen> {
   late NodespenDocument _document;
   late ModeManager _modeManager;
-  late PlaybackController _playback;
 
   @override
   void initState() {
     super.initState();
     _document = NodespenDocument(name: 'Mi proyecto');
     _modeManager = ModeManager(_document);
-    _playback = PlaybackController(_document);
     _modeManager.registerMode(DrawMode());
     _modeManager.registerMode(NodeMode());
     _modeManager.registerMode(GachaMode());
@@ -44,13 +35,11 @@ class _EditorScreenState extends State<EditorScreen> {
   void _onModeChanged() => setState(() {});
   bool get _isNodeMode => _modeManager.activeMode?.modeType == ProjectMode.node;
   bool get _isDrawMode => _modeManager.activeMode?.modeType == ProjectMode.draw;
-  bool get _isGachaMode => _modeManager.activeMode?.modeType == ProjectMode.gacha;
 
   @override
   void dispose() {
     _modeManager.removeListener(_onModeChanged);
     _modeManager.dispose();
-    _playback.dispose();
     super.dispose();
   }
 
@@ -70,7 +59,6 @@ class _EditorScreenState extends State<EditorScreen> {
                   child: CanvasViewport(
                     modeManager: _modeManager,
                     document: _document,
-                    playback: _playback,
                   ),
                 ),
                 _buildRightPanel(),
@@ -122,22 +110,9 @@ class _EditorScreenState extends State<EditorScreen> {
           tooltip: 'Reproducir',
         ),
         IconButton(
-          icon: const Icon(Icons.import_export, color: NodespenColors.textSecondary),
-          onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => ImportExportScreen(document: _document)),
-            );
-          },
-          tooltip: 'Importar/Exportar',
-        ),
-        IconButton(
-          icon: const Icon(Icons.settings, color: NodespenColors.textSecondary),
-          onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const SettingsScreen()),
-            );
-          },
-          tooltip: 'Ajustes',
+          icon: const Icon(Icons.file_download, color: NodespenColors.textSecondary),
+          onPressed: () {},
+          tooltip: 'Exportar',
         ),
         const SizedBox(width: 16),
       ],
@@ -165,13 +140,11 @@ class _EditorScreenState extends State<EditorScreen> {
             for (final tool in mode.tools)
               _toolChip(tool.icon, tool.name, active: mode.currentTool.toolType == tool.toolType, onTap: () => mode.setTool(tool.toolType)),
           ],
-          if (_isNodeMode && mode is NodeMode) ...[
-            for (final tool in mode.tools)
-              _toolChip(tool.icon, tool.name, active: mode.currentTool.toolType == tool.toolType, onTap: () => mode.setTool(tool.toolType)),
-          ],
-          if (_isGachaMode && mode is GachaMode) ...[
-            for (final tool in mode.tools)
-              _toolChip(tool.icon, tool.name, active: mode.currentTool.toolType == tool.toolType, onTap: () => mode.setTool(tool.toolType)),
+          if (_isNodeMode) ...[
+            _toolChip('🖊️', 'Seleccionar'),
+            _toolChip('➕', 'Nodo'),
+            _toolChip('🔗', 'Segmento'),
+            _toolChip('🎬', 'Reel'),
           ],
         ],
       ),
@@ -206,12 +179,14 @@ class _EditorScreenState extends State<EditorScreen> {
         ),
       ),
       child: Column(
-        children: (_isNodeMode && mode is NodeMode)
+        children: _isNodeMode
           ? [
-              _toolButton(Icons.touch_app, 'Seleccionar', active: mode.currentTool.toolType == NodeToolType.select, onPressed: () => mode.setTool(NodeToolType.select)),
-              _toolButton(Icons.add_circle_outline, 'Añadir nodo', active: mode.currentTool.toolType == NodeToolType.addNode, onPressed: () => mode.setTool(NodeToolType.addNode)),
-              _toolButton(Icons.link, 'Añadir segmento', active: mode.currentTool.toolType == NodeToolType.addSegment, onPressed: () => mode.setTool(NodeToolType.addSegment)),
-              _toolButton(Icons.remove_circle_outline, 'Eliminar', active: mode.currentTool.toolType == NodeToolType.delete, onPressed: () => mode.setTool(NodeToolType.delete)),
+              _toolButton(Icons.touch_app, 'Arrastrar (Mango A)'),
+              _toolButton(Icons.rotate_right, 'Rotar (Mango B)'),
+              _toolButton(Icons.add_circle_outline, 'Añadir nodo'),
+              _toolButton(Icons.remove_circle_outline, 'Eliminar nodo'),
+              _toolButton(Icons.compare_arrows, 'Mover segmento'),
+              _toolButton(Icons.link, 'Unir figuras'),
               const Spacer(),
               _toolButton(Icons.settings, 'Ajustes'),
             ]
@@ -226,19 +201,11 @@ class _EditorScreenState extends State<EditorScreen> {
                 const Spacer(),
                 _toolButton(Icons.settings, 'Ajustes'),
               ]
-            : (_isGachaMode && mode is GachaMode
-              ? [
-                  _toolButton(Icons.accessibility_new, 'Pose', active: mode.currentTool.toolType == GachaToolType.pose, onPressed: () => mode.setTool(GachaToolType.pose)),
-                  _toolButton(Icons.checkroom, 'Vestir', active: mode.currentTool.toolType == GachaToolType.dress, onPressed: () => mode.setTool(GachaToolType.dress)),
-                  _toolButton(Icons.palette, 'Color', active: mode.currentTool.toolType == GachaToolType.color, onPressed: () => mode.setTool(GachaToolType.color)),
-                  const Spacer(),
-                  _toolButton(Icons.settings, 'Ajustes'),
-                ]
-              : [
-                  _toolButton(Icons.pan_tool, 'Seleccionar'),
-                  const Spacer(),
-                  _toolButton(Icons.settings, 'Ajustes'),
-                ])),
+            : [
+                _toolButton(Icons.pan_tool, 'Seleccionar'),
+                const Spacer(),
+                _toolButton(Icons.settings, 'Ajustes'),
+              ]),
       ),
     );
   }
@@ -286,9 +253,7 @@ class _EditorScreenState extends State<EditorScreen> {
               ? _buildNodeProperties()
               : (_isDrawMode && _modeManager.activeMode is DrawMode)
                 ? _buildDrawProperties(_modeManager.activeMode as DrawMode)
-                : (_isGachaMode && _modeManager.activeMode is GachaMode)
-                  ? _buildGachaProperties(_modeManager.activeMode as GachaMode)
-                  : _buildGenericProperties(),
+                : _buildGenericProperties(),
           ),
         ],
       ),
@@ -348,71 +313,6 @@ class _EditorScreenState extends State<EditorScreen> {
           ),
         ),
       )).toList(),
-    );
-  }
-
-  Widget _buildGachaProperties(GachaMode mode) {
-    final char = mode.character;
-    return ListView(
-      padding: const EdgeInsets.all(12),
-      children: [
-        _propSection('Personaje: ${char.name}'),
-        _propRow('Partes', '${char.bodyParts.length}'),
-        _propRow('Equipado', '${char.wornItems.length} piezas'),
-        _propRow('Inventario', '${char.inventory.length} ítems'),
-        const SizedBox(height: 12),
-        Divider(color: NodespenColors.border, height: 1),
-        const SizedBox(height: 8),
-        _propSection('Vestuario'),
-        for (final cat in ClothingCategory.values) ...[
-          if (char.inventory.any((i) => i.category == cat))
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 2),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      cat.name,
-                      style: TextStyle(color: NodespenColors.textSecondary, fontSize: 11),
-                    ),
-                  ),
-                  const SizedBox(width: 4),
-                  SizedBox(
-                    width: 80, height: 24,
-                    child: TextButton(
-                      style: TextButton.styleFrom(
-                        padding: EdgeInsets.zero,
-                        foregroundColor: NodespenColors.accent,
-                        textStyle: const TextStyle(fontSize: 10),
-                      ),
-                      onPressed: () {
-                        final equipped = char.getEquipped(cat);
-                        if (equipped != null) {
-                          mode.unequipCategory(cat);
-                        } else {
-                          final item = char.inventory.where((i) => i.category == cat).first;
-                          mode.equipItem(item);
-                        }
-                        setState(() {});
-                      },
-                      child: Text(char.isEquipped(cat) ? 'Quitar' : 'Poner'),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-        ],
-        const SizedBox(height: 12),
-        Divider(color: NodespenColors.border, height: 1),
-        const SizedBox(height: 8),
-        _propSection('Herramienta: ${mode.currentTool.name}'),
-        if (mode.currentTool.toolType == GachaToolType.pose)
-          _propRow('Arrastra partes', 'para posar'),
-        if (mode.currentTool.toolType == GachaToolType.dress)
-          _propRow('Toca categoría', 'cambia la prenda'),
-        if (mode.currentTool.toolType == GachaToolType.color)
-          _propRow('Toca parte', 'cambia su color'),
-      ],
     );
   }
 
@@ -490,9 +390,83 @@ class _EditorScreenState extends State<EditorScreen> {
   }
 
   Widget _buildTimeline() {
-    return TimelineEditor(
-      document: _document,
-      playback: _playback,
+    return Container(
+      height: 120,
+      decoration: BoxDecoration(
+        color: NodespenColors.surface,
+        border: Border(
+          top: BorderSide(color: NodespenColors.border),
+        ),
+      ),
+      child: Column(
+        children: [
+          Container(
+            height: 32,
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            decoration: BoxDecoration(
+              color: NodespenColors.background,
+              border: Border(
+                bottom: BorderSide(color: NodespenColors.border),
+              ),
+            ),
+            child: Row(
+              children: [
+                Text(
+                  'Timeline',
+                  style: TextStyle(
+                    color: NodespenColors.textSecondary,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const Spacer(),
+                Text(
+                  'FPS: ${_document.timeline.fps}',
+                  style: TextStyle(
+                    color: NodespenColors.textSecondary,
+                    fontSize: 11,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Text(
+                  'Frame: ${_document.timeline.currentFrame}',
+                  style: TextStyle(
+                    color: NodespenColors.textSecondary,
+                    fontSize: 11,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: Row(
+              children: List.generate(24, (i) {
+                return Container(
+                  width: 40,
+                  decoration: BoxDecoration(
+                    border: Border(
+                      right: BorderSide(color: NodespenColors.border.withValues(alpha: 0.3)),
+                    ),
+                    color: i == _document.timeline.currentFrame
+                      ? NodespenColors.accent.withValues(alpha: 0.2)
+                      : null,
+                  ),
+                  child: Center(
+                    child: Text(
+                      '${i + 1}',
+                      style: TextStyle(
+                        color: NodespenColors.textSecondary.withValues(alpha: 0.5),
+                        fontSize: 9,
+                      ),
+                    ),
+                  ),
+                );
+              }),
+            ),
+          ),
+        ],
+      ),
+
     );
   }
 }
