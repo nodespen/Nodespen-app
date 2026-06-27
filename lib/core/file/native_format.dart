@@ -1,6 +1,6 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:typed_data';
+import 'package:archive/archive.dart';
 import '../document/document.dart';
 
 class NativeFormat {
@@ -10,7 +10,7 @@ class NativeFormat {
   static Uint8List encode(NodespenDocument document) {
     final jsonStr = jsonEncode(document.toJson());
     final jsonBytes = utf8.encode(jsonStr);
-    final compressed = gzip.encode(jsonBytes);
+    final compressed = GZipCodec().encode(jsonBytes);
 
     final header = BytesBuilder();
     header.add(utf8.encode(magicBytes));
@@ -28,7 +28,7 @@ class NativeFormat {
     final dataLength = _bytesToInt32(bytes.sublist(5, 9));
     final compressed = bytes.sublist(9, 9 + dataLength);
 
-    final decompressed = gzip.decode(compressed);
+    final decompressed = GZipCodec().decode(compressed);
     final jsonStr = utf8.decode(decompressed);
     final json = jsonDecode(jsonStr) as Map<String, dynamic>;
 

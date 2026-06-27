@@ -237,8 +237,10 @@ class GachaMode extends Mode {
       ..lineTo(-torso.width / 2 - 10, torso.height / 2 + 10)
       ..close();
     canvas.drawPath(path, paint);
-    final sec = Paint()..color = item.colorSecundario;
-    canvas.drawPath(path, Paint()..color = sec..style = PaintingStyle.stroke..strokeWidth = 1);
+    canvas.drawPath(path, Paint()
+      ..color = item.colorSecundario
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1);
   }
 
   void _renderPants(Canvas canvas, ClothingItem item) {
