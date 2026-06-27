@@ -1,7 +1,5 @@
 import 'dart:async';
 import '../document/document.dart';
-import '../document/timeline.dart';
-import '../document/layer.dart';
 import '../document/frame.dart';
 import 'tween_engine.dart';
 

@@ -1,6 +1,7 @@
 import 'dart:ui' show Color;
 import 'package:uuid/uuid.dart';
 import 'body_part.dart';
+import 'color_utils.dart';
 
 enum ClothingCategory {
   peinado, sombrero, ojos, boca, mascara,
@@ -35,7 +36,7 @@ class ClothingItem {
   Map<String, dynamic> toJson() => {
     'id': id, 'name': name, 'category': category.name,
     'attachmentPoint': attachmentPoint.name,
-    'color': color.value, 'colorSecundario': colorSecundario.value,
+    'color': colorToInt(color), 'colorSecundario': colorToInt(colorSecundario),
     'scale': scale, 'activo': activo,
   };
 
@@ -43,7 +44,7 @@ class ClothingItem {
     id: json['id'], name: json['name'],
     category: ClothingCategory.values.byName(json['category']),
     attachmentPoint: BodyPartType.values.byName(json['attachmentPoint']),
-    color: Color(json['color']),
+    color: intToColor(json['color']),
     colorSecundario: Color(json['colorSecundario']),
     scale: (json['scale'] as num).toDouble(),
     activo: json['activo'],

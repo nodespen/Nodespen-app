@@ -7,17 +7,14 @@ enum AiFeature {
 
 class AiService {
   bool _available = false;
-  String? _apiKey;
 
   bool get isAvailable => _available;
 
   void configure(String apiKey) {
-    _apiKey = apiKey;
     _available = true;
   }
 
   void disable() {
-    _apiKey = null;
     _available = false;
   }
 

@@ -3,6 +3,7 @@ import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
 import 'body_part.dart';
 import 'clothing_item.dart';
+import 'color_utils.dart';
 import '../../../../core/math/vector2.dart';
 
 class GachaCharacter {
@@ -33,8 +34,6 @@ class GachaCharacter {
 
   void _buildDefaultBody() {
     final skin = const Color(0xFFFFDBB4);
-    final eyeWhite = const Color(0xFFFFFFFF);
-    final pupil = const Color(0xFF2D2D2D);
 
     bodyParts[BodyPartType.cabeza] = BodyPart(
       type: BodyPartType.cabeza, name: 'Cabeza',
@@ -143,7 +142,7 @@ class GachaCharacter {
       'type': e.key.name,
       'position': [e.value.position.x, e.value.position.y],
       'angle': e.value.angle,
-      'color': e.value.color.value,
+      'color': colorToInt(e.value.color),
     }).toList(),
     'wornItems': wornItems.map((w) => w.toJson()).toList(),
     'inventory': inventory.map((w) => w.toJson()).toList(),

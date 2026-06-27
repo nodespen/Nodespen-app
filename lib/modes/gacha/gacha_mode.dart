@@ -326,8 +326,6 @@ class GachaMode extends Mode {
       canvas.restore();
     }
 
-    final skin = Paint()
-      ..color = const Color(0xFFFFDBB4);
     final head = _character.bodyParts[BodyPartType.cabeza]!;
     canvas.save();
     canvas.translate(head.position.x, head.position.y);

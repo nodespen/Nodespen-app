@@ -38,7 +38,7 @@ class PivotImporter extends FormatImporter {
       if (figureCount == 0) return ImportResult(error: 'Sin figuras');
 
       final nodeCount = bytes[offset++];
-      final segCount = bytes[offset++];
+      offset++; // skip segment count
 
       final nodeIds = <int>[];
       for (var i = 0; i < nodeCount && offset + 9 <= bytes.length; i++) {

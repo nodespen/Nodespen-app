@@ -9,8 +9,6 @@ import '../../modes/gacha/models/clothing_item.dart' show ClothingCategory;
 import '../../modes/gacha/tools/gacha_tool.dart' show GachaToolType;
 import '../../core/animation/playback_controller.dart';
 import '../../core/document/document.dart';
-import '../../services/colab_service.dart';
-import '../../services/ai_service.dart';
 import '../theme/app_theme.dart';
 import '../widgets/mode_selector.dart';
 import '../widgets/canvas_viewport.dart';
