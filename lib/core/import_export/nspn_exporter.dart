@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:archive/archive.dart';
 import '../../core/document/document.dart';
 import 'import_engine.dart';
@@ -7,17 +6,6 @@ import 'import_engine.dart';
 class NspnExporter extends FormatExporter {
   @override String get formatName => 'Nodespen (.nspn)';
   @override ExportFormat get format => ExportFormat.nspn;
-
-  @override
-  Future<ExportResult> export(NodespenDocument document, String outputPath) async {
-    try {
-      final bytes = await exportToBytes(document);
-      await File(outputPath).writeAsBytes(bytes);
-      return ExportResult(success: true, filePath: outputPath);
-    } catch (e) {
-      return ExportResult(error: 'Error exportando: $e');
-    }
-  }
 
   @override
   Future<List<int>> exportToBytes(NodespenDocument document) async {

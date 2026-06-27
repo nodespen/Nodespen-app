@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import '../../core/document/document.dart';
 import '../../core/document/scene.dart';
@@ -13,17 +12,6 @@ import 'import_engine.dart';
 class PivotImporter extends FormatImporter {
   @override String get formatName => 'Pivot Animator (.piv)';
   @override ImportFormat get format => ImportFormat.piv;
-
-  @override
-  Future<ImportResult> import(String filePath) async {
-    try {
-      final file = File(filePath);
-      final bytes = await file.readAsBytes();
-      return importFromBytes(bytes);
-    } catch (e) {
-      return ImportResult(error: 'Error leyendo .piv: $e');
-    }
-  }
 
   @override
   Future<ImportResult> importFromBytes(List<int> bytes) async {

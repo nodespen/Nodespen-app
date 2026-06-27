@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:flutter/material.dart';
 import '../../core/document/document.dart';
 import '../../core/document/layer.dart';
@@ -10,17 +9,6 @@ import 'import_engine.dart';
 class FlashImporter extends FormatImporter {
   @override String get formatName => 'Flash (.fla/.xfl)';
   @override ImportFormat get format => ImportFormat.fla;
-
-  @override
-  Future<ImportResult> import(String filePath) async {
-    try {
-      final file = File(filePath);
-      final bytes = await file.readAsBytes();
-      return importFromBytes(bytes);
-    } catch (e) {
-      return ImportResult(error: 'Error leyendo archivo: $e');
-    }
-  }
 
   @override
   Future<ImportResult> importFromBytes(List<int> bytes) async {

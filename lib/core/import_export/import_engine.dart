@@ -23,13 +23,11 @@ class ExportResult {
 abstract class FormatImporter {
   String get formatName;
   ImportFormat get format;
-  Future<ImportResult> import(String filePath);
   Future<ImportResult> importFromBytes(List<int> bytes);
 }
 
 abstract class FormatExporter {
   String get formatName;
   ExportFormat get format;
-  Future<ExportResult> export(NodespenDocument document, String outputPath);
   Future<List<int>> exportToBytes(NodespenDocument document);
 }

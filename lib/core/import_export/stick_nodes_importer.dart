@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:flutter/material.dart';
 import '../../core/document/document.dart';
 import '../../core/document/scene.dart';
@@ -14,17 +13,6 @@ import 'import_engine.dart';
 class StickNodesImporter extends FormatImporter {
   @override String get formatName => 'Stick Nodes (.stknds)';
   @override ImportFormat get format => ImportFormat.stknds;
-
-  @override
-  Future<ImportResult> import(String filePath) async {
-    try {
-      final file = File(filePath);
-      final bytes = await file.readAsBytes();
-      return importFromBytes(bytes);
-    } catch (e) {
-      return ImportResult(error: 'Error leyendo archivo: $e');
-    }
-  }
 
   @override
   Future<ImportResult> importFromBytes(List<int> bytes) async {
