@@ -41,12 +41,13 @@ jobs:
         run: |
           flutter analyze --no-fatal-infos --no-fatal-warnings 2>&1 | tee analysis_log.txt
           exit_code=${PIPESTATUS[0]}
+          echo "ANALYSIS_EXIT_CODE=$exit_code" >> $GITHUB_ENV
           if [ $exit_code -ne 0 ]; then
             echo "=== FULL ANALYSIS OUTPUT ==="
             cat analysis_log.txt
-            exit $exit_code
+          else
+            echo "=== ANALYSIS PASSED ==="
           fi
-          echo "=== ANALYSIS PASSED ==="
 
       - name: Upload analysis logs
         if: always()
@@ -54,6 +55,12 @@ jobs:
         with:
           name: analysis-logs
           path: analysis_log.txt
+
+      - name: Fail if analysis had errors
+        if: env.ANALYSIS_EXIT_CODE != '0'
+        run: |
+          echo "Analysis failed with exit code $ANALYSIS_EXIT_CODE"
+          exit 1
 
       - name: Build APK (Android)
         run: flutter build apk --release
