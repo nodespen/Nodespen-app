@@ -1,15 +1,30 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import '../mode.dart';
 import '../../core/document/document.dart';
 import '../../core/canvas/renderer.dart';
+import '../../core/math/vector2.dart';
 import '../node/models/marioneta.dart';
 import '../node/models/nodo.dart';
 import '../node/models/polyfill.dart';
 import '../node/models/default_pencil.dart';
+import 'tools/node_tool.dart';
+import 'tools/select_tool.dart';
+import 'tools/add_node_tool.dart';
+import 'tools/add_segment_tool.dart';
+import 'tools/delete_tool.dart';
 
 class NodeMode extends Mode {
   late Marioneta _pencil;
   bool _initialized = false;
+  late NodeWorkspace _workspace;
+  NodeTool _currentTool = SelectTool();
+  final List<NodeTool> _tools = [
+    SelectTool(),
+    AddNodeTool(),
+    AddSegmentTool(),
+    DeleteTool(),
+  ];
 
   @override String get name => 'Nodo';
   @override String get icon => '🖊️';
@@ -17,13 +32,49 @@ class NodeMode extends Mode {
   @override ProjectMode get modeType => ProjectMode.node;
 
   Marioneta get pencil => _pencil;
+  NodeTool get currentTool => _currentTool;
+  List<NodeTool> get tools => _tools;
+  NodeWorkspace get workspace => _workspace;
+
+  void setTool(NodeToolType type) {
+    _currentTool.onDeactivate();
+    _currentTool = _tools.firstWhere((t) => t.toolType == type);
+    _currentTool.onActivate();
+  }
 
   @override
   void onActivate(NodespenDocument document) {
     if (!_initialized) {
       _pencil = DefaultPencil.create();
+      _workspace = NodeWorkspace(marioneta: _pencil);
       _initialized = true;
     }
+    _currentTool.onActivate();
+  }
+
+  @override
+  void onDeactivate(NodespenDocument document) {
+    _currentTool.onDeactivate();
+  }
+
+  @override
+  void onTap(Vector2 position, NodespenDocument document) {
+    _currentTool.onTap(position, _workspace);
+  }
+
+  @override
+  void onDragStart(Vector2 position, NodespenDocument document) {
+    _currentTool.onDragStart(position, _workspace);
+  }
+
+  @override
+  void onDragUpdate(Vector2 position, NodespenDocument document) {
+    _currentTool.onDragUpdate(position, _workspace);
+  }
+
+  @override
+  void onDragEnd(Vector2 position, NodespenDocument document) {
+    _currentTool.onDragEnd(position, _workspace);
   }
 
   @override
@@ -34,6 +85,7 @@ class NodeMode extends Mode {
     canvas.translate(size.width / 2, size.height / 2);
 
     _renderMarioneta(canvas, _pencil);
+    _currentTool.renderOverlay(canvas, _workspace);
 
     canvas.restore();
   }
@@ -41,20 +93,18 @@ class NodeMode extends Mode {
   void _renderMarioneta(Canvas canvas, Marioneta marioneta) {
     if (!marioneta.visible) return;
 
-    // Dibujar segmentos
     for (final seg in marioneta.segmentos) {
+      if (!seg.activo) continue;
       final origen = marioneta.obtenerNodo(seg.nodoOrigenId);
       final destino = marioneta.obtenerNodo(seg.nodoDestinoId);
       if (origen == null || destino == null) continue;
       _renderSegmento(canvas, origen, destino);
     }
 
-    // Dibujar polyfills
     for (final pf in marioneta.polyfills) {
       _renderPolyfill(canvas, pf, marioneta);
     }
 
-    // Dibujar nodos (encima de segmentos)
     for (final nodo in marioneta.nodos) {
       _renderNodo(canvas, nodo);
     }
@@ -111,6 +161,7 @@ class NodeMode extends Mode {
       ..strokeWidth = 1;
 
     final dir = to - from;
+    if (dir.distance < 0.01) return;
     final perp = Offset(-dir.dy, dir.dx) * (nodo.grosor / 2 / dir.distance);
     final base = from;
     final tip = to;
@@ -145,6 +196,7 @@ class NodeMode extends Mode {
     final pos = Offset(nodo.posicion.x, nodo.posicion.y);
     final radius = 4.0;
     final paint = Paint();
+    final isSelected = _workspace.selectedNodeId == nodo.id;
 
     switch (nodo.tipo) {
       case NodoTipo.raiz:
@@ -170,7 +222,13 @@ class NodeMode extends Mode {
         canvas.drawCircle(pos, radius - 2, Paint()..color = Colors.white);
     }
 
-    // Mostrar nombre si tiene
+    if (isSelected) {
+      canvas.drawCircle(pos, radius + 4, Paint()
+        ..color = Colors.cyan
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.5);
+    }
+
     if (nodo.nombre.isNotEmpty) {
       final tp = TextPainter(
         text: TextSpan(
