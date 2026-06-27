@@ -42,6 +42,7 @@ jobs:
           flutter analyze --no-fatal-infos --no-fatal-warnings 2>&1 | tee analysis_log.txt
           exit_code=${PIPESTATUS[0]}
           echo "ANALYSIS_EXIT_CODE=$exit_code" >> $GITHUB_ENV
+          { echo "### Analysis Output"; echo '```'; cat analysis_log.txt; echo '```'; } >> $GITHUB_STEP_SUMMARY
           if [ $exit_code -ne 0 ]; then
             echo "=== FULL ANALYSIS OUTPUT ==="
             cat analysis_log.txt
