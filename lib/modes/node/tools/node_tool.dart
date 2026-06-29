@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/marioneta.dart';
 import '../models/nodo.dart';
-import '../models/segmento.dart';
 import '../../../core/math/vector2.dart';
 
 enum NodeToolType { select, addNode, addSegment, delete, move, rotate }

@@ -1,9 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import '../../core/document/document.dart';
-import '../../core/document/scene.dart';
 import '../../core/document/layer.dart';
-import '../../core/document/frame.dart';
 import '../../core/math/vector2.dart';
 import '../../modes/node/models/marioneta.dart';
 import '../../modes/node/models/nodo.dart';

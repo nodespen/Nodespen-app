@@ -16,7 +16,6 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   bool _onionSkinDefault = false;
   bool _autoTween = true;
-  String _userName = '';
 
   @override
   Widget build(BuildContext context) {

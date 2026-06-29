@@ -129,8 +129,8 @@ class _CategoryTile extends StatelessWidget {
       case ClothingCategory.peinado: icon = Icons.face;
       case ClothingCategory.sombrero: icon = Icons.workspace_premium;
       case ClothingCategory.ojos: icon = Icons.visibility;
-      case ClothingCategory.boca: icon = Icons.mouth;
-      case ClothingCategory.mascara: icon = Icons.mask;
+      case ClothingCategory.boca: icon = Icons.emoji_emotions;
+      case ClothingCategory.mascara: icon = Icons.theater_comedy;
       case ClothingCategory.camisa: icon = Icons.checkroom;
       case ClothingCategory.chaqueta: icon = Icons.checkroom;
       case ClothingCategory.vestido: icon = Icons.woman;

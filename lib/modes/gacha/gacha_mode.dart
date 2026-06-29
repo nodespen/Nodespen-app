@@ -324,7 +324,7 @@ class GachaMode extends Mode {
       final head = _character.bodyParts[BodyPartType.cabeza]!;
       canvas.save();
       canvas.translate(head.position.x, head.position.y);
-      canvas.drawArc(const Rect.fromCenter(center: const Offset(0, 6), width: 10, height: 6), 0, math.pi, false, mouth);
+      canvas.drawArc(Rect.fromCenter(center: const Offset(0, 6), width: 10, height: 6), 0, math.pi, false, mouth);
       canvas.restore();
     }
 

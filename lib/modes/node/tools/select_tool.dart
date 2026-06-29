@@ -1,6 +1,4 @@
-import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import '../models/marioneta.dart';
 import '../models/nodo.dart';
 import 'node_tool.dart';
 import 'ik_fk_solver.dart';

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/document/document.dart';
+import '../../core/document/scene.dart';
 import '../../core/document/timeline.dart';
 import '../../core/document/layer.dart';
 import '../../core/document/frame.dart';
@@ -124,7 +125,7 @@ class _TimelineEditorState extends State<TimelineEditor> {
           _iconButton(Icons.keyboard, 'Añadir Keyframe', () => _addKeyframe(timeline)),
           Container(width: 1, height: 20, color: NodespenColors.border, margin: const EdgeInsets.symmetric(horizontal: 8)),
           Text(
-            'Frame: ${timeline.currentFrame + 1} / ${_frameCount}',
+            'Frame: ${timeline.currentFrame + 1} / $_frameCount',
             style: const TextStyle(color: NodespenColors.textSecondary, fontSize: 11),
           ),
           Container(width: 1, height: 20, color: NodespenColors.border, margin: const EdgeInsets.symmetric(horizontal: 8)),

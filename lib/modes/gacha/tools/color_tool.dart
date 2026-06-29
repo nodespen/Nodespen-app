@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import '../models/gacha_character.dart';
-import '../models/body_part.dart';
 import 'gacha_tool.dart';
 import '../../../core/math/vector2.dart';
 
@@ -9,10 +7,7 @@ class ColorTool extends GachaTool {
   @override String get icon => '🎨';
   @override GachaToolType get toolType => GachaToolType.color;
 
-  Color _currentColor = const Color(0xFFFFDBB4);
-
-  set color(Color c) => _currentColor = c;
-  Color get color => _currentColor;
+  Color color = const Color(0xFFFFDBB4);
 
   @override
   void onTap(Vector2 position, GachaWorkspace workspace) {

@@ -1,7 +1,4 @@
-import 'dart:ui' show Color;
 import 'package:flutter/material.dart';
-import '../models/marioneta.dart';
-import '../models/nodo.dart';
 import '../models/segmento.dart';
 import 'node_tool.dart';
 import '../../../core/math/vector2.dart';
