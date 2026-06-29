@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import '../math/vector2.dart';
 import '../document/document.dart';
 import '../document/layer.dart';
+import '../../modes/mode.dart';
 
 class NodespenRenderer {
   final NodespenDocument document;
   late Matrix3 viewMatrix;
   Rect visibleBounds;
+  Mode? activeMode;
 
   NodespenRenderer(this.document)
     : viewMatrix = Matrix3.identity(),
@@ -45,6 +47,10 @@ class NodespenRenderer {
   }
 
   void renderLayer(Canvas canvas, Layer layer, Size size) {
+    if (activeMode != null && activeMode!.modeType.name == layer.contentType.name) {
+      activeMode!.render(canvas, size, this);
+      return;
+    }
     switch (layer.contentType) {
       case ContentType.draw:
         _renderDrawContent(canvas, layer);
@@ -56,15 +62,21 @@ class NodespenRenderer {
   }
 
   void _renderDrawContent(Canvas canvas, Layer layer) {
-    // Placeholder: se implementará en Fase 2
+    if (activeMode != null && activeMode!.modeType == ProjectMode.draw) {
+      activeMode!.render(canvas, visibleBounds.size, this);
+    }
   }
 
   void _renderNodeContent(Canvas canvas, Layer layer) {
-    // Placeholder: se implementará en Fase 3
+    if (activeMode != null && activeMode!.modeType == ProjectMode.node) {
+      activeMode!.render(canvas, visibleBounds.size, this);
+    }
   }
 
   void _renderGachaContent(Canvas canvas, Layer layer) {
-    // Placeholder: se implementará en Fase 4
+    if (activeMode != null && activeMode!.modeType == ProjectMode.gacha) {
+      activeMode!.render(canvas, visibleBounds.size, this);
+    }
   }
 
   void _applyMatrixToCanvas(Canvas canvas, Matrix3 matrix) {

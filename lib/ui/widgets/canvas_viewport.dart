@@ -34,6 +34,18 @@ class _CanvasViewportState extends State<CanvasViewport> {
   void initState() {
     super.initState();
     _renderer = NodespenRenderer(widget.document);
+    _renderer.activeMode = widget.modeManager.activeMode;
+    widget.modeManager.addListener(_onModeChanged);
+  }
+
+  void _onModeChanged() {
+    _renderer.activeMode = widget.modeManager.activeMode;
+  }
+
+  @override
+  void dispose() {
+    widget.modeManager.removeListener(_onModeChanged);
+    super.dispose();
   }
 
   @override
@@ -41,6 +53,12 @@ class _CanvasViewportState extends State<CanvasViewport> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.document != widget.document) {
       _renderer = NodespenRenderer(widget.document);
+      _renderer.activeMode = widget.modeManager.activeMode;
+    }
+    if (oldWidget.modeManager != widget.modeManager) {
+      oldWidget.modeManager.removeListener(_onModeChanged);
+      widget.modeManager.addListener(_onModeChanged);
+      _renderer.activeMode = widget.modeManager.activeMode;
     }
   }
 

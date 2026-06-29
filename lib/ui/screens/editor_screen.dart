@@ -121,15 +121,20 @@ class _EditorScreenState extends State<EditorScreen> {
           onPressed: () {},
           tooltip: 'Reproducir',
         ),
-        IconButton(
-          icon: const Icon(Icons.import_export, color: NodespenColors.textSecondary),
-          onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => ImportExportScreen(document: _document)),
-            );
-          },
-          tooltip: 'Importar/Exportar',
-        ),
+          IconButton(
+            icon: const Icon(Icons.import_export, color: NodespenColors.textSecondary),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => ImportExportScreen(
+                  document: _document,
+                  onDocumentLoaded: (doc) {
+                    setState(() { _document = doc; });
+                  },
+                )),
+              );
+            },
+            tooltip: 'Importar/Exportar',
+          ),
         IconButton(
           icon: const Icon(Icons.settings, color: NodespenColors.textSecondary),
           onPressed: () {
