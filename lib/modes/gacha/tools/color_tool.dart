@@ -13,7 +13,7 @@ class ColorTool extends GachaTool {
   void onTap(Vector2 position, GachaWorkspace workspace) {
     final hit = workspace.hitTest(position);
     if (hit != null) {
-      hit.color = _currentColor;
+      hit.color = color;
       workspace.selectedPartType = hit.type.name;
     }
   }

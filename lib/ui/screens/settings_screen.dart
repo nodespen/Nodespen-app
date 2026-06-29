@@ -42,7 +42,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
               contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             ),
             style: const TextStyle(color: NodespenColors.textPrimary, fontSize: 13),
-            onChanged: (v) => _userName = v,
           ),
           const SizedBox(height: 8),
           ElevatedButton.icon(
