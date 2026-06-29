@@ -4,9 +4,11 @@ import '../../modes/node/node_mode.dart';
 import '../../modes/draw/draw_mode.dart';
 import '../../modes/draw/tools/draw_tool.dart';
 import '../../modes/node/tools/node_tool.dart' show NodeToolType;
+import '../../modes/node/tools/ik_fk_solver.dart' show IKFkMode;
 import '../../modes/gacha/gacha_mode.dart';
 import '../../modes/gacha/models/clothing_item.dart' show ClothingCategory;
 import '../../modes/gacha/tools/gacha_tool.dart' show GachaToolType;
+import '../../modes/gacha/ui/wardrobe_widget.dart';
 import '../../core/animation/playback_controller.dart';
 import '../../core/document/document.dart';
 import '../theme/app_theme.dart';
@@ -217,16 +219,19 @@ class _EditorScreenState extends State<EditorScreen> {
               _toolButton(Icons.add_circle_outline, 'Añadir nodo', active: mode.currentTool.toolType == NodeToolType.addNode, onPressed: () => mode.setTool(NodeToolType.addNode)),
               _toolButton(Icons.link, 'Añadir segmento', active: mode.currentTool.toolType == NodeToolType.addSegment, onPressed: () => mode.setTool(NodeToolType.addSegment)),
               _toolButton(Icons.remove_circle_outline, 'Eliminar', active: mode.currentTool.toolType == NodeToolType.delete, onPressed: () => mode.setTool(NodeToolType.delete)),
+              _toolButton(mode.ikFkMode == IKFkMode.ik ? Icons.auto_fix_high : Icons.details, mode.ikFkMode == IKFkMode.ik ? 'IK' : 'FK', active: true, onPressed: () => mode.setIkFkMode(mode.ikFkMode == IKFkMode.ik ? IKFkMode.fk : IKFkMode.ik)),
               const Spacer(),
               _toolButton(Icons.settings, 'Ajustes'),
             ]
           : (_isDrawMode && mode is DrawMode
-            ? [
+              ? [
+                _toolButton(Icons.touch_app, 'Seleccionar', active: mode.currentTool.toolType == ToolType.select, onPressed: () => mode.setTool(ToolType.select)),
                 _toolButton(Icons.edit, 'Lápiz', active: mode.currentTool.toolType == ToolType.pen, onPressed: () => mode.setTool(ToolType.pen)),
                 _toolButton(Icons.brush, 'Borrador', active: mode.currentTool.toolType == ToolType.eraser, onPressed: () => mode.setTool(ToolType.eraser)),
                 _toolButton(Icons.crop_square, 'Rectángulo', active: mode.currentTool.toolType == ToolType.rect, onPressed: () => mode.setTool(ToolType.rect)),
                 _toolButton(Icons.circle_outlined, 'Círculo', active: mode.currentTool.toolType == ToolType.circle, onPressed: () => mode.setTool(ToolType.circle)),
                 _toolButton(Icons.show_chart, 'Línea', active: mode.currentTool.toolType == ToolType.line, onPressed: () => mode.setTool(ToolType.line)),
+                _toolButton(Icons.format_paint, 'Rellenar', active: mode.currentTool.toolType == ToolType.fill, onPressed: () => mode.setTool(ToolType.fill)),
                 _toolButton(Icons.delete_sweep, 'Limpiar', onPressed: () => mode.clearCanvas()),
                 const Spacer(),
                 _toolButton(Icons.settings, 'Ajustes'),
@@ -368,44 +373,55 @@ class _EditorScreenState extends State<EditorScreen> {
         const SizedBox(height: 12),
         Divider(color: NodespenColors.border, height: 1),
         const SizedBox(height: 8),
-        _propSection('Vestuario'),
-        for (final cat in ClothingCategory.values) ...[
-          if (char.inventory.any((i) => i.category == cat))
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 2),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      cat.name,
-                      style: TextStyle(color: NodespenColors.textSecondary, fontSize: 11),
-                    ),
-                  ),
-                  const SizedBox(width: 4),
-                  SizedBox(
-                    width: 80, height: 24,
-                    child: TextButton(
-                      style: TextButton.styleFrom(
-                        padding: EdgeInsets.zero,
-                        foregroundColor: NodespenColors.accent,
-                        textStyle: const TextStyle(fontSize: 10),
-                      ),
-                      onPressed: () {
-                        final equipped = char.getEquipped(cat);
-                        if (equipped != null) {
-                          mode.unequipCategory(cat);
-                        } else {
-                          final item = char.inventory.where((i) => i.category == cat).first;
-                          mode.equipItem(item);
-                        }
-                        setState(() {});
-                      },
-                      child: Text(char.isEquipped(cat) ? 'Quitar' : 'Poner'),
-                    ),
-                  ),
-                ],
-              ),
+        if (mode.currentTool.toolType == GachaToolType.dress)
+          SizedBox(
+            height: 400,
+            child: WardrobeWidget(
+              character: char,
+              onEquip: (item) { mode.equipItem(item); setState(() {}); },
+              onUnequip: (cat) { mode.unequipCategory(cat); setState(() {}); },
             ),
+          )
+        else ...[
+          _propSection('Vestuario'),
+          for (final cat in ClothingCategory.values) ...[
+            if (char.inventory.any((i) => i.category == cat))
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 2),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        cat.name,
+                        style: TextStyle(color: NodespenColors.textSecondary, fontSize: 11),
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    SizedBox(
+                      width: 80, height: 24,
+                      child: TextButton(
+                        style: TextButton.styleFrom(
+                          padding: EdgeInsets.zero,
+                          foregroundColor: NodespenColors.accent,
+                          textStyle: const TextStyle(fontSize: 10),
+                        ),
+                        onPressed: () {
+                          final equipped = char.getEquipped(cat);
+                          if (equipped != null) {
+                            mode.unequipCategory(cat);
+                          } else {
+                            final item = char.inventory.where((i) => i.category == cat).first;
+                            mode.equipItem(item);
+                          }
+                          setState(() {});
+                        },
+                        child: Text(char.isEquipped(cat) ? 'Quitar' : 'Poner'),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+          ],
         ],
         const SizedBox(height: 12),
         Divider(color: NodespenColors.border, height: 1),
@@ -414,7 +430,7 @@ class _EditorScreenState extends State<EditorScreen> {
         if (mode.currentTool.toolType == GachaToolType.pose)
           _propRow('Arrastra partes', 'para posar'),
         if (mode.currentTool.toolType == GachaToolType.dress)
-          _propRow('Toca categoría', 'cambia la prenda'),
+          _propRow('Panel de vestuario', 'desplegado arriba'),
         if (mode.currentTool.toolType == GachaToolType.color)
           _propRow('Toca parte', 'cambia su color'),
       ],

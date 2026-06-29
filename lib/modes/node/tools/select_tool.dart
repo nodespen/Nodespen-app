@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/marioneta.dart';
 import '../models/nodo.dart';
 import 'node_tool.dart';
+import 'ik_fk_solver.dart';
 import '../../../core/math/vector2.dart';
 
 class SelectTool extends NodeTool {
@@ -10,8 +11,12 @@ class SelectTool extends NodeTool {
   @override String get icon => '🖊️';
   @override NodeToolType get toolType => NodeToolType.select;
 
+  final IkFkSolver ikFk = IkFkSolver();
   Nodo? _dragNode;
   Vector2? _dragOffset;
+
+  IKFkMode get ikFkMode => ikFk.mode;
+  set ikFkMode(IKFkMode m) => ikFk.mode = m;
 
   @override
   void onActivate() {}
@@ -47,15 +52,21 @@ class SelectTool extends NodeTool {
   @override
   void onDragUpdate(Vector2 position, NodeWorkspace workspace) {
     if (_dragNode == null || _dragOffset == null) return;
-    _dragNode!.posicion = position + _dragOffset!;
-    _dragNode!.posicionLocal = _dragNode!.posicion;
+    final targetPos = position + _dragOffset!;
+    final isRoot = _dragNode!.id == workspace.marioneta.nodoRaizId;
+
+    if (isRoot) {
+      ikFk.moveRoot(workspace.marioneta, targetPos - _dragNode!.posicion);
+    } else if (ikFk.mode == IKFkMode.ik) {
+      ikFk.solveIK(workspace.marioneta, _dragNode!, targetPos);
+    } else {
+      _dragNode!.posicion = targetPos;
+      _dragNode!.posicionLocal = targetPos;
+    }
   }
 
   @override
   void onDragEnd(Vector2 position, NodeWorkspace workspace) {
-    if (_dragNode == null) return;
-    _dragNode!.posicion = position + _dragOffset!;
-    _dragNode!.posicionLocal = _dragNode!.posicion;
     _dragNode = null;
     _dragOffset = null;
   }
@@ -76,5 +87,16 @@ class SelectTool extends NodeTool {
     final fill = Paint()
       ..color = Colors.cyan.withValues(alpha: 0.15);
     canvas.drawCircle(pos, 8, fill);
+
+    if (ikFk.mode == IKFkMode.ik) {
+      final label = TextPainter(
+        text: const TextSpan(
+          text: 'IK',
+          style: TextStyle(color: Colors.cyanAccent, fontSize: 10),
+        ),
+        textDirection: TextDirection.ltr,
+      )..layout();
+      label.paint(canvas, pos + const Offset(10, -16));
+    }
   }
 }

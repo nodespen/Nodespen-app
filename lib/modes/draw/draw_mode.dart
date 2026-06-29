@@ -7,6 +7,8 @@ import 'tools/draw_tool.dart';
 import 'tools/pen_tool.dart';
 import 'tools/shape_tool.dart';
 import 'tools/eraser_tool.dart';
+import 'tools/select_tool.dart';
+import 'tools/fill_tool.dart';
 
 class DrawMode extends Mode {
   @override String get name => 'Dibujo';
@@ -16,7 +18,7 @@ class DrawMode extends Mode {
 
   final DrawingCanvas _canvas = DrawingCanvas();
   DrawTool _currentTool = PenTool();
-  final List<DrawTool> _tools = [PenTool(), ShapeTool(), ShapeTool(shapeType: ToolType.circle), ShapeTool(shapeType: ToolType.line), EraserTool()];
+  final List<DrawTool> _tools = [PenTool(), ShapeTool(), ShapeTool(shapeType: ToolType.circle), ShapeTool(shapeType: ToolType.line), EraserTool(), SelectTool(), FillTool()];
 
   DrawTool get currentTool => _currentTool;
   DrawingCanvas get canvas => _canvas;
@@ -45,7 +47,6 @@ class DrawMode extends Mode {
 
   @override
   void onTap(Vector2 position, NodespenDocument document) {
-    if (_currentTool.toolType == ToolType.select) return;
     _currentTool.onTap(position, _canvas);
   }
 

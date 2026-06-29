@@ -13,6 +13,7 @@ import 'tools/select_tool.dart';
 import 'tools/add_node_tool.dart';
 import 'tools/add_segment_tool.dart';
 import 'tools/delete_tool.dart';
+import 'tools/ik_fk_solver.dart';
 
 class NodeMode extends Mode {
   late Marioneta _pencil;
@@ -35,6 +36,15 @@ class NodeMode extends Mode {
   NodeTool get currentTool => _currentTool;
   List<NodeTool> get tools => _tools;
   NodeWorkspace get workspace => _workspace;
+
+  IKFkMode get ikFkMode =>
+    (_currentTool is SelectTool) ? (_currentTool as SelectTool).ikFkMode : IKFkMode.fk;
+
+  void setIkFkMode(IKFkMode m) {
+    if (_currentTool is SelectTool) {
+      (_currentTool as SelectTool).ikFkMode = m;
+    }
+  }
 
   void setTool(NodeToolType type) {
     _currentTool.onDeactivate();

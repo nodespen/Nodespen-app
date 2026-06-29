@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/drawing_element.dart';
 import '../../../core/math/vector2.dart';
 
-enum ToolType { pen, eraser, rect, circle, line, select }
+enum ToolType { pen, eraser, rect, circle, line, select, fill }
 
 abstract class DrawTool {
   String get name;
